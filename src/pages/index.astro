@@ -1,50 +1,365 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import Base from '../layouts/Base.astro';
+import { REPO_URL, RELEASES_URL, INSTALL_GUIDE_URL, DOCS_URL } from '../consts';
+
+const installGuide = DOCS_URL ? `${DOCS_URL}/installation/` : INSTALL_GUIDE_URL;
+
+const steps = [
+	{
+		title: 'Connect your sources.',
+		body: 'PostgreSQL, ClickHouse, Snowflake, BigQuery, Trino, SQL Server, Oracle and more — or files from a folder.',
+	},
+	{
+		title: 'Add nodes and write each step',
+		body: 'in pandas, Polars, DuckDB SQL, or SQL that runs inside your warehouse. Mix them freely in one flow.',
+	},
+	{
+		title: 'Inspect anything.',
+		body: "Every node's output is cached, so you can open it, chart it, or re-run from that point without recomputing everything upstream.",
+	},
+	{
+		title: 'Load and schedule.',
+		body: "Write results to any connected database with each engine's fastest native loader, then put the flow on a schedule.",
+	},
+];
+
+const audiences = [
+	{
+		title: 'Data and BI teams',
+		body: 'Orchestrate warehouse-to-warehouse work, keep transformation logic visible and reviewable, and stop moving millions of rows through laptops.',
+	},
+	{
+		title: 'Analysts moving into Python',
+		body: "Start from a step that works, read the code it's made of, change it. Every node is real Python or SQL, so the skills carry over to everything else you'll write.",
+	},
+	{
+		title: 'Research and teaching',
+		body: 'A pipeline you can open, audit and re-run is a better record of an analysis than a sequence of clicks. Scientific libraries plug in as engines.',
+		coming: 'Desktop edition for the classroom: coming.',
+	},
+];
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
+<Base
+	title="Sidewinder Flow Studio — visual ETL where every node is code"
+	description="Build data pipelines on a canvas where each node is a Python or SQL cell. Inspect every step, mix pandas, Polars and DuckDB, and push heavy work into your warehouse. Open source, self-hosted."
+>
+	<!-- Hero -->
+	<section class="hero">
+		<div class="wrap">
+			<span class="eyebrow">Sidewinder Flow Studio</span>
+			<h1>Every node is code.<br />Every step is visible.</h1>
+			<p class="lede">
+				Sidewinder Flow Studio is a visual ETL tool where each node on the canvas is a Python or SQL
+				cell. Data moves between nodes as Apache Arrow, so you can click any step and see exactly what
+				came out of it.
 			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
+			<div class="btn-row">
+				<a class="btn btn--primary" href="#quick-start">Get started</a>
+				<a class="btn btn--ghost" href={REPO_URL}>View on GitHub</a>
+			</div>
+			<p class="fine">Open source (AGPL-3.0) · Self-hosted · Your data stays on your infrastructure</p>
+			<figure class="shot hero-shot">
+				<img
+					src="/img/flow-run.webp"
+					width="1600"
+					height="900"
+					alt="A finished flow in Sidewinder Flow Studio: nearly 3 million NYC taxi trips downloaded with DuckDB, loaded into ClickHouse with Polars, and verified with SQL inside ClickHouse. Row counts appear on the edges between nodes."
+					fetchpriority="high"
+				/>
+			</figure>
+		</div>
+	</section>
+
+	<!-- Proof strip -->
+	<section class="proof" aria-label="Measured performance">
+		<div class="wrap">
+			<ul class="proof-list">
+				<li><strong>33.7 million rows</strong> read from CSV in under 10 seconds with the Polars engine</li>
+				<li><strong>1.25 million rows</strong> bulk-loaded into PostgreSQL in about 10 seconds</li>
+				<li><strong>Charts over 30 million rows</strong> answered in under a second, computed where the data lives</li>
 			</ul>
-			<p>
-				Have fun! If you get stuck, remember to <a href="https://docs.astro.build/"
-					>read the docs
-				</a> or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
+			<p class="proof-note">Measured on a single workstation.</p>
+		</div>
+	</section>
+
+	<!-- How it works -->
+	<section class="section">
+		<div class="wrap">
+			<span class="eyebrow">How it works</span>
+			<h2>Draw the flow. Write the steps. Watch the data.</h2>
+			<ol class="steps">
+				{steps.map((s, i) => (
+					<li class="card">
+						<span class="step-n" aria-hidden="true">{i + 1}</span>
+						<p><strong>{s.title}</strong> {s.body}</p>
+					</li>
+				))}
+			</ol>
+		</div>
+	</section>
+
+	<!-- Features -->
+	<section class="section section--soft">
+		<div class="wrap">
+			<div class="feature">
+				<div>
+					<span class="eyebrow">Explore</span>
+					<h2>Drag-and-drop charts over any data</h2>
+					<p>
+						Open any node's output, any persisted table, or a live database connection, and build charts by
+						dragging fields. Each chart is compiled to SQL and runs where the data lives, so only the
+						aggregated result reaches your browser. Every query has a row cap and a timeout by default, and
+						you can see the SQL behind each chart.
+					</p>
+				</div>
+				<figure class="shot">
+					<img
+						src="/img/explore-chart.webp"
+						width="1600"
+						height="900"
+						loading="lazy"
+						alt="The Explore view: trips per day in January 2024 charted from almost 3 million rows, with the SQL behind the chart listed underneath."
+					/>
+				</figure>
+			</div>
+
+			<div class="grid grid--2 features">
+				<article class="card">
+					<h3>Build — notebooks, without the hidden state</h3>
+					<p>
+						In a notebook, cells share one namespace and run in whatever order you clicked. In Flow Studio
+						each node has its own scope and passes exactly one frame to the next, so dependencies are
+						explicit and a flow runs the same way every time. Join and union several inputs, branch with a
+						Router node, checkpoint a slow step and resume from it tomorrow.
+					</p>
+				</article>
+				<article class="card">
+					<h3>Scale — bigger than memory, on one machine</h3>
+					<p>
+						DuckDB reads cached data straight from disk and spills when a query outgrows memory. Polars
+						streams its results. Independent branches can run in parallel. When the data already lives in a
+						warehouse, push the work down and bring back only the result.
+					</p>
+				</article>
+				<article class="card">
+					<h3>Load — native speed, not row by row</h3>
+					<p>
+						<code>fast_write</code> uses each database's own bulk path: PostgreSQL <code>COPY</code>,
+						ClickHouse native inserts, SQL Server <code>fast_executemany</code>, Oracle array binding.
+						Missing tables are created from your data's schema.
+					</p>
+				</article>
+				<article class="card">
+					<h3>Extend — plugins that can't break your environment</h3>
+					<p>
+						Add engines as ordinary Python packages. Libraries with demanding dependencies can run in their
+						own virtual environment, exchanging data as Arrow files, so a machine learning library never
+						destabilises your ETL setup. A scikit-learn plugin ships as a working example.
+					</p>
+				</article>
+				<article class="card card--wide">
+					<h3>AI-assisted, with your own model</h3>
+					<p>
+						Describe a step in plain language and get the code, written against your actual columns. Use
+						your own API key or a local model through Ollama. The code lands in the node for you to read and
+						edit; nothing runs without you.
+					</p>
+				</article>
+			</div>
+		</div>
+	</section>
+
+	<!-- Who it's for -->
+	<section class="section">
+		<div class="wrap">
+			<span class="eyebrow">Who it's for</span>
+			<div class="grid grid--3">
+				{audiences.map((a) => (
+					<article class="card">
+						<h3>{a.title}</h3>
+						<p>{a.body}</p>
+						{a.coming && <p class="coming"><em>{a.coming}</em></p>}
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- Quick start -->
+	<section class="section section--soft" id="quick-start">
+		<div class="wrap qs">
+			<div>
+				<span class="eyebrow">Quick start</span>
+				<h2>Running in a few minutes</h2>
+				<p class="muted">You need Docker. Everything runs on your machine.</p>
+				<p><a href={installGuide}>Full installation guide →</a></p>
+			</div>
+			<pre><code>git clone https://github.com/sidewinder-labs/sidewinder-flow-studio.git
+cd sidewinder-flow-studio
+cp .env.docker .env      # then set SECRET_KEY
+docker compose up --build -d
+# open http://localhost:8080</code></pre>
+		</div>
+	</section>
+
+	<!-- Closing -->
+	<section class="section closing">
+		<div class="wrap">
+			<h2>Built in the open.</h2>
+			<p class="lede">
+				Flow Studio is developed in public by one person, with releases every few weeks. Issues, ideas
+				and pull requests are welcome.
 			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out <a
-					href="https://github.com/Charca/astro-blog-template"
-					>astro-blog-template
-				</a> by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+			<div class="btn-row">
+				<a class="btn btn--primary" href={REPO_URL}>Star on GitHub</a>
+				<a class="btn btn--ghost" href={RELEASES_URL}>Read the release notes</a>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.hero {
+		padding: 64px 0 56px;
+		background:
+			radial-gradient(1200px 500px at 85% -10%, color-mix(in srgb, var(--indigo-700) 30%, transparent), transparent 70%),
+			var(--bg);
+	}
+	.hero h1 {
+		max-width: 16ch;
+	}
+	.hero .lede {
+		margin-bottom: 1.6em;
+	}
+	.fine {
+		margin: 16px 0 0;
+		font-size: 0.9rem;
+		color: var(--text-muted);
+	}
+	.hero-shot {
+		margin: 48px 0 0;
+	}
+
+	.proof {
+		background: var(--indigo-900);
+		color: var(--steel);
+		padding: 36px 0 28px;
+		border-top: 1px solid var(--border);
+		border-bottom: 1px solid var(--border);
+	}
+	.proof-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 20px;
+	}
+	@media (min-width: 720px) {
+		.proof-list {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 32px;
+		}
+	}
+	.proof-list strong {
+		display: block;
+		font-size: 1.45rem;
+		color: var(--sand);
+		letter-spacing: -0.01em;
+		line-height: 1.25;
+		margin-bottom: 4px;
+	}
+	.proof-note {
+		margin: 20px 0 0;
+		font-size: 0.82rem;
+		opacity: 0.8;
+	}
+
+	.steps {
+		list-style: none;
+		padding: 0;
+		margin: 32px 0 0;
+		display: grid;
+		gap: 16px;
+		counter-reset: none;
+	}
+	@media (min-width: 720px) {
+		.steps {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+	@media (min-width: 1000px) {
+		.steps {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+	.steps p {
+		margin: 0;
+		color: var(--text-muted);
+	}
+	.steps strong {
+		color: var(--heading);
+	}
+	.step-n {
+		display: grid;
+		place-items: center;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		background: var(--btn-bg);
+		color: var(--btn-text);
+		font-weight: 700;
+		margin-bottom: 14px;
+	}
+
+	.feature {
+		display: grid;
+		gap: 32px;
+		align-items: center;
+		margin-bottom: 40px;
+	}
+	@media (min-width: 900px) {
+		.feature {
+			grid-template-columns: 5fr 7fr;
+			gap: 48px;
+		}
+	}
+	.feature figure {
+		margin: 0;
+	}
+	.features .card p {
+		color: var(--text-muted);
+	}
+	@media (min-width: 720px) {
+		.card--wide {
+			grid-column: 1 / -1;
+		}
+	}
+
+	.coming {
+		color: var(--accent-text);
+		margin-top: -0.2em;
+	}
+
+	.qs {
+		display: grid;
+		gap: 24px;
+		align-items: center;
+	}
+	@media (min-width: 900px) {
+		.qs {
+			grid-template-columns: 2fr 3fr;
+			gap: 48px;
+		}
+	}
+	.qs > * {
+		min-width: 0;
+	}
+	.qs pre {
+		margin: 0;
+	}
+
+	.closing {
+		text-align: left;
+	}
+</style>

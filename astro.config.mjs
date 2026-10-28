@@ -5,9 +5,12 @@ import sitemap from "@astrojs/sitemap";
 
 import cloudflare from "@astrojs/cloudflare";
 
-// https://astro.build/config
+// Static output: every page is prerendered and served by Cloudflare as a file.
+// The only code that runs per request is the interest form endpoint
+// (src/pages/api/interest.ts, prerender = false).
 export default defineConfig({
-	site: "https://example.com",
+	site: "https://sidewinderlabs.dev",
+	output: "static",
 	integrations: [mdx(), sitemap()],
 	adapter: cloudflare({
 		platformProxy: {

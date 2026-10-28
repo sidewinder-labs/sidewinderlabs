@@ -1,0 +1,303 @@
+---
+import Base from '../layouts/Base.astro';
+import { REPO_URL } from '../consts';
+import { ENTERPRISE_CAPABILITIES as enterprise } from '../data/enterprise';
+
+const community = [
+	'Visual canvas with Python and SQL nodes',
+	'pandas, Polars and DuckDB engines, plus SQL and Ibis pushdown to your warehouse',
+	'Every connector: PostgreSQL, MySQL, SQL Server, Oracle, ClickHouse, Snowflake, BigQuery, Redshift, Trino, Databricks, StarRocks, Doris, Druid, SQLite, Azure Data Lake, Delta Lake, Iceberg',
+	'Explore: drag-and-drop charts over flows and live databases',
+	'Native bulk loading, scheduling with retries and alerts, run history',
+	'Plugin system with isolated environments',
+	'AI-assisted authoring with your own model',
+	'Self-hosted with Docker',
+];
+
+const faq = [
+	{
+		q: 'Will features move from Community to Enterprise?',
+		a: 'No. Everything published in the open repository stays there. Enterprise adds new capabilities on top.',
+	},
+	{
+		q: 'Why AGPL?',
+		a: 'It keeps the project open: anyone can use, modify and self-host Flow Studio freely, and anyone offering a modified version as a network service shares their changes.',
+	},
+	{
+		q: 'Is my data sent anywhere?',
+		a: 'No. Flow Studio runs on your infrastructure. AI assistance only contacts the model provider you configure, and you can use a local one.',
+	},
+];
+---
+
+<Base
+	title="Editions — Sidewinder Flow Studio"
+	description="Community edition: the full tool, free and open source. Enterprise capabilities for organisations are on the way."
+>
+	<section class="section intro">
+		<div class="wrap">
+			<span class="eyebrow">Editions</span>
+			<h1>The whole tool is free.</h1>
+			<p class="lede">
+				Everything Flow Studio does today is in the open-source Community edition. The Enterprise edition
+				will add what organisations need around it — and nothing already published will be taken away.
+			</p>
+		</div>
+	</section>
+
+	<section class="section editions-section">
+		<div class="wrap grid grid--2 editions">
+			<article class="card edition">
+				<header>
+					<h2>Community</h2>
+					<p class="tag">Free · AGPL-3.0</p>
+					<p class="muted">For individuals, small teams, research groups and classrooms.</p>
+				</header>
+				<ul class="checklist">
+					{community.map((c) => <li>{c}</li>)}
+				</ul>
+				<a class="btn btn--primary" href="/#quick-start">Get started</a>
+			</article>
+
+			<article class="card edition edition--ent">
+				<header>
+					<h2>Enterprise</h2>
+					<p class="tag">Coming</p>
+					<p class="muted">For organisations running Flow Studio as a shared service.</p>
+				</header>
+				<ul class="checklist">
+					{enterprise.map((e) => <li><strong>{e.title}</strong> — {e.body}</li>)}
+				</ul>
+				<a class="btn btn--ghost" href="#interest">Register interest</a>
+			</article>
+		</div>
+	</section>
+
+	<section class="section section--soft" id="interest">
+		<div class="wrap form-wrap">
+			<div>
+				<h2>Tell us what you'd need.</h2>
+				<p class="muted">No sales calls, no commitment — this decides what gets built first.</p>
+			</div>
+
+			<form class="card interest" method="post" action="/api/interest" data-interest>
+				<div class="field">
+					<label for="f-name">Name</label>
+					<input id="f-name" name="name" autocomplete="name" required maxlength="200" />
+				</div>
+				<div class="field">
+					<label for="f-email">Email</label>
+					<input id="f-email" name="email" type="email" autocomplete="email" required maxlength="320" />
+				</div>
+				<div class="field">
+					<label for="f-org">Organisation</label>
+					<input id="f-org" name="organisation" autocomplete="organization" required maxlength="200" />
+				</div>
+				<fieldset class="field">
+					<legend>Which capabilities matter</legend>
+					{enterprise.map((e) => (
+						<label class="check">
+							<input type="checkbox" name="capabilities" value={e.value} />
+							<span>{e.title}</span>
+						</label>
+					))}
+				</fieldset>
+				<div class="field">
+					<label for="f-notes">Anything else <span class="muted">(optional)</span></label>
+					<textarea id="f-notes" name="notes" rows="4" maxlength="4000"></textarea>
+				</div>
+				<!-- Left empty by people; bots tend to fill it. -->
+				<div class="hp" aria-hidden="true">
+					<label for="f-website">Website</label>
+					<input id="f-website" name="website" tabindex="-1" autocomplete="off" />
+				</div>
+				<button class="btn btn--primary" type="submit">Send</button>
+				<p class="status" role="status" aria-live="polite"></p>
+				<p class="privacy">Used only to contact you about Flow Studio Enterprise. Ask and we'll delete it.</p>
+			</form>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="wrap faq">
+			<h2>Questions</h2>
+			{faq.map((f) => (
+				<div class="qa">
+					<h3>{f.q}</h3>
+					<p>{f.a}</p>
+				</div>
+			))}
+			<p class="muted">Something else? <a href={`${REPO_URL}/issues`}>Ask on GitHub</a>.</p>
+		</div>
+	</section>
+</Base>
+
+<script>
+	// Submit without leaving the page; without JavaScript the form posts normally
+	// and the endpoint redirects to /editions/thanks/.
+	const form = document.querySelector<HTMLFormElement>('form[data-interest]');
+	form?.addEventListener('submit', async (ev) => {
+		ev.preventDefault();
+		const status = form.querySelector<HTMLElement>('.status')!;
+		const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+		button.disabled = true;
+		status.textContent = 'Sending…';
+		status.dataset.state = '';
+		try {
+			const res = await fetch(form.action, {
+				method: 'POST',
+				body: new FormData(form),
+				headers: { Accept: 'application/json' },
+			});
+			const data = await res.json().catch(() => ({}));
+			if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
+			form.reset();
+			status.textContent = 'Thanks — you’ll hear from us when there’s something to show.';
+			status.dataset.state = 'ok';
+		} catch (err) {
+			status.textContent = err instanceof Error ? err.message : String(err);
+			status.dataset.state = 'error';
+		} finally {
+			button.disabled = false;
+		}
+	});
+</script>
+
+<style>
+	.intro {
+		padding-bottom: 8px;
+	}
+	.editions-section {
+		padding-top: 32px;
+	}
+	.editions {
+		align-items: stretch;
+	}
+	.edition {
+		display: flex;
+		flex-direction: column;
+	}
+	.edition .btn {
+		margin-top: auto;
+		align-self: flex-start;
+	}
+	.edition h2 {
+		margin-bottom: 0.1em;
+	}
+	.tag {
+		font-weight: 600;
+		color: var(--accent-text);
+		margin-bottom: 0.5em;
+	}
+	.edition--ent {
+		border-style: dashed;
+	}
+
+	.form-wrap {
+		display: grid;
+		gap: 24px;
+	}
+	@media (min-width: 900px) {
+		.form-wrap {
+			grid-template-columns: 1fr 1.4fr;
+			gap: 48px;
+			align-items: start;
+		}
+	}
+	.interest {
+		display: grid;
+		gap: 16px;
+	}
+	.field {
+		display: grid;
+		gap: 6px;
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+	label,
+	legend {
+		font-weight: 600;
+		font-size: 0.95rem;
+		color: var(--heading);
+	}
+	legend {
+		margin-bottom: 6px;
+		padding: 0;
+	}
+	input:not([type='checkbox']),
+	textarea {
+		width: 100%;
+		font: inherit;
+		font-size: 1rem;
+		color: var(--text);
+		background: var(--bg);
+		border: 1px solid var(--border);
+		border-radius: 10px;
+		padding: 10px 12px;
+	}
+	input:focus,
+	textarea:focus {
+		outline: 2px solid var(--edge);
+		outline-offset: 1px;
+	}
+	.check {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-weight: 400;
+		color: var(--text);
+		padding: 4px 0;
+	}
+	.check input {
+		width: 18px;
+		height: 18px;
+		accent-color: var(--sand-deep);
+	}
+	.hp {
+		position: absolute;
+		left: -10000px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
+	.interest .btn {
+		justify-self: start;
+	}
+	.interest .btn:disabled {
+		opacity: 0.6;
+		cursor: progress;
+	}
+	.status {
+		margin: 0;
+		min-height: 1.4em;
+		color: var(--text-muted);
+	}
+	.privacy {
+		margin: 0;
+		font-size: 0.85rem;
+		color: var(--text-muted);
+	}
+	.status[data-state='ok'] {
+		color: var(--heading);
+		font-weight: 600;
+	}
+	.status[data-state='error'] {
+		color: #e5484d;
+	}
+
+	.faq {
+		max-width: 46rem;
+	}
+	.qa {
+		border-top: 1px solid var(--border);
+		padding-top: 20px;
+		margin-top: 20px;
+	}
+	.qa h3 {
+		font-size: 1.1rem;
+	}
+	.qa p {
+		color: var(--text-muted);
+	}
+</style>

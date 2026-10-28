@@ -26,3 +26,34 @@ npm run dev       # local dev server at http://localhost:4321
 npm run check     # build, typecheck and a dry-run deploy
 npm run deploy    # publish to Cloudflare
 ```
+
+All pages are static. The one exception is the interest form on `/editions/`,
+which posts to `src/pages/api/interest.ts`.
+
+### Interest form storage
+
+Submissions are stored in a Workers KV namespace bound as `INTEREST`. Until it
+exists, the form answers "not accepting submissions yet". To set it up once:
+
+```bash
+npx wrangler kv namespace create INTEREST
+```
+
+Add the id it prints to `wrangler.json`:
+
+```json
+"kv_namespaces": [{ "binding": "INTEREST", "id": "<id from the command above>" }]
+```
+
+To read submissions (one JSON value per key, keys sorted by time):
+
+```bash
+npx wrangler kv key list --binding INTEREST --remote
+npx wrangler kv key get "<key>" --binding INTEREST --remote
+```
+
+### Site settings
+
+`src/consts.ts` holds the links. `DOCS_URL` and `CONTACT_EMAIL` are `null`, which
+hides the documentation and contact links; set them when those exist.
+

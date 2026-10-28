@@ -1,6 +1,6 @@
 {
 	"name": "sidewinderlabs",
-	"description": "Build a personal website, blog, or portfolio with Astro.",
+	"description": "Website for sidewinderlabs.dev — Sidewinder Labs and Sidewinder Flow Studio.",
 	"cloudflare": {
 		"label": "Astro Framework Starter",
 		"products": [
