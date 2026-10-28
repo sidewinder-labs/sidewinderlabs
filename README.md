@@ -32,18 +32,9 @@ which posts to `src/pages/api/interest.ts`.
 
 ### Interest form storage
 
-Submissions are stored in a Workers KV namespace bound as `INTEREST`. Until it
-exists, the form answers "not accepting submissions yet". To set it up once:
-
-```bash
-npx wrangler kv namespace create INTEREST
-```
-
-Add the id it prints to `wrangler.json`:
-
-```json
-"kv_namespaces": [{ "binding": "INTEREST", "id": "<id from the command above>" }]
-```
+Submissions are stored in the Workers KV namespace `sidewinderlabs-interest`,
+bound as `INTEREST` in `wrangler.json`. After changing bindings, regenerate
+`worker-configuration.d.ts` with `npx wrangler types`.
 
 To read submissions (one JSON value per key, keys sorted by time):
 
