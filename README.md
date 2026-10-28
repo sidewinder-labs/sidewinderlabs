@@ -1,64 +1,28 @@
-# Astro Starter Kit: Blog
+# sidewinderlabs
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/astro-blog-starter-template)
+Source for [sidewinderlabs.dev](https://sidewinderlabs.dev), the Sidewinder Labs website. Product code and documentation live in [sidewinder-flow-studio](https://github.com/sidewinder-labs/sidewinder-flow-studio).
 
-![Astro Template Preview](https://github.com/withastro/astro/assets/2244813/ff10799f-a816-4703-b967-c78997e8323d)
+## Open-source data tools, built in public
 
-<!-- dash-content-start -->
+**[Sidewinder Flow Studio](https://github.com/sidewinder-labs/sidewinder-flow-studio)** is a visual ETL tool where every node is a Python or SQL cell. Data moves between nodes as Apache Arrow, so you can inspect any step, re-run from any point, and mix pandas, Polars and DuckDB in the same flow — or push the work down into your warehouse.
 
-Create a blog with Astro and deploy it on Cloudflare Workers as a [static website](https://developers.cloudflare.com/workers/static-assets/).
+- Load, transform and bulk-load data across PostgreSQL, ClickHouse, Snowflake, Trino and a dozen more
+- Explore any node output or table with drag-and-drop charts, compiled to SQL and run where the data lives
+- Extend it with plugins, from scikit-learn models to engines of your own
 
-Features:
+Self-hosted and AGPL-3.0 licensed. Built and maintained by one person; issues and ideas are welcome.
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-- ✅ Built-in Observability logging
+- [Website](https://sidewinderlabs.dev)
+- [Documentation](https://docs.sidewinderlabs.dev)
+- [Latest release](https://github.com/sidewinder-labs/sidewinder-flow-studio/releases/latest)
 
-<!-- dash-content-end -->
+## Working on the site
 
-## Getting Started
-
-Outside of this repo, you can start a new project with this template using [C3](https://developers.cloudflare.com/pages/get-started/c3/) (the `create-cloudflare` CLI):
+Astro, deployed to Cloudflare Workers.
 
 ```bash
-npm create cloudflare@latest -- --template=cloudflare/templates/astro-blog-starter-template
+npm install
+npm run dev       # local dev server at http://localhost:4321
+npm run check     # build, typecheck and a dry-run deploy
+npm run deploy    # publish to Cloudflare
 ```
-
-A live public deployment of this template is available at [https://astro-blog-starter-template.templates.workers.dev](https://astro-blog-starter-template.templates.workers.dev)
-
-## 🚀 Project Structure
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                           | Action                                           |
-| :-------------------------------- | :----------------------------------------------- |
-| `npm install`                     | Installs dependencies                            |
-| `npm run dev`                     | Starts local dev server at `localhost:4321`      |
-| `npm run build`                   | Build your production site to `./dist/`          |
-| `npm run preview`                 | Preview your build locally, before deploying     |
-| `npm run astro ...`               | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help`         | Get help using the Astro CLI                     |
-| `npm run build && npm run deploy` | Deploy your production site to Cloudflare        |
-| `npm wrangler tail`               | View real-time logs for all Workers              |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
