@@ -27,8 +27,27 @@ npm run check     # build, typecheck and a dry-run deploy
 npm run deploy    # publish to Cloudflare
 ```
 
-All pages are static. The one exception is the interest form on `/editions/`,
-which posts to `src/pages/api/interest.ts`.
+All pages are static, with two exceptions that run per request:
+
+- the interest form on `/editions/`, which posts to `src/pages/api/interest.ts`
+- `/download/`, which reads the latest desktop release (see below)
+
+### Downloads
+
+`/download/` offers the desktop installers of the latest GitHub release. It
+reads the release's `latest.json` (the updater manifest CI attaches), so
+publishing a release updates the page with no redeploy; Cloudflare caches it
+for five minutes. `src/lib/latest-release.ts` does the reading.
+
+Permanent links that always redirect to the newest installer, for READMEs and
+docs:
+
+- `https://sidewinderlabs.dev/download/windows` (per-user installer, .exe)
+- `https://sidewinderlabs.dev/download/windows-msi`
+- `https://sidewinderlabs.dev/download/linux-appimage`
+- `https://sidewinderlabs.dev/download/linux-deb`
+
+If GitHub can't be reached they fall back to the releases page.
 
 ### Interest form storage
 

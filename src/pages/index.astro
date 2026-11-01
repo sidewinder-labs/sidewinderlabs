@@ -35,7 +35,7 @@ const audiences = [
 	{
 		title: 'Research and teaching',
 		body: 'A pipeline you can open, audit and re-run is a better record of an analysis than a sequence of clicks. Scientific libraries plug in as engines.',
-		coming: 'Desktop edition for the classroom: coming.',
+		desktop: true,
 	},
 ];
 ---
@@ -56,9 +56,9 @@ const audiences = [
 			</p>
 			<div class="btn-row">
 				<a class="btn btn--primary" href="#quick-start">Get started</a>
-				<a class="btn btn--ghost" href={REPO_URL}>View on GitHub</a>
+				<a class="btn btn--ghost" href="/download/">Download for desktop</a>
 			</div>
-			<p class="fine">Open source (AGPL-3.0) · Self-hosted · Your data stays on your infrastructure</p>
+			<p class="fine">Open source (AGPL-3.0) · Self-hosted or desktop · Your data stays on your infrastructure</p>
 			<figure class="shot hero-shot">
 				<img
 					src="/img/flow-run.webp"
@@ -179,7 +179,7 @@ const audiences = [
 					<article class="card">
 						<h3>{a.title}</h3>
 						<p>{a.body}</p>
-						{a.coming && <p class="coming"><em>{a.coming}</em></p>}
+						{a.desktop && <p class="coming"><a href="/download/">Desktop app for Windows and Linux →</a></p>}
 					</article>
 				))}
 			</div>
@@ -193,6 +193,10 @@ const audiences = [
 				<span class="eyebrow">Quick start</span>
 				<h2>Running in a few minutes</h2>
 				<p class="muted">You need Docker. Everything runs on your machine.</p>
+				<p class="muted">
+					Just for you, on one computer? The <a href="/download/">desktop app</a> for Windows and Linux
+					needs nothing else installed.
+				</p>
 				<p><a href={installGuide}>Full installation guide →</a></p>
 			</div>
 			<pre><code>git clone https://github.com/sidewinder-labs/sidewinder-flow-studio.git

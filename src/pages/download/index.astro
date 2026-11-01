@@ -1,0 +1,246 @@
+---
+// Rendered per request (and cached for a few minutes) so it always offers the
+// latest GitHub release; see src/lib/latest-release.ts.
+import Base from '../../layouts/Base.astro';
+import { REPO_URL, RELEASES_URL } from '../../consts';
+import { getLatestRelease } from '../../lib/latest-release';
+
+export const prerender = false;
+
+const latest = await getLatestRelease();
+Astro.response.headers.set('cache-control', 'public, max-age=300');
+
+const fallback = `${RELEASES_URL}/latest`;
+const link = (key: keyof NonNullable<typeof latest>['downloads']) => latest?.downloads[key] ?? fallback;
+const released = latest?.date
+	? new Date(latest.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+	: null;
+
+const platforms = [
+	{
+		os: 'windows',
+		name: 'Windows',
+		requires: 'Windows 10 or 11, 64-bit',
+		primary: { label: 'Download for Windows', href: link('windows'), note: 'Installs for you only; no administrator rights needed.' },
+		secondary: { label: 'MSI for all users', href: link('windows-msi'), note: 'Needs administrator rights; for IT deployment.' },
+		tips: [
+			{ text: 'The installer is not code-signed yet, so Windows SmartScreen may say “Windows protected your PC”. Choose More info, then Run anyway.' },
+		],
+	},
+	{
+		os: 'linux',
+		name: 'Linux',
+		requires: '64-bit (x86_64), Ubuntu 22.04 or newer, or any distribution of that age',
+		primary: { label: 'Download AppImage', href: link('linux-appimage'), note: 'Runs on any distribution, and updates itself.' },
+		secondary: { label: '.deb for Debian and Ubuntu', href: link('linux-deb'), note: 'Installs with your package manager.' },
+		tips: [
+			{ text: 'Make the AppImage executable, then run it:', code: 'chmod +x Sidewinder-Flow-Studio_*.AppImage' },
+			{ text: 'On Ubuntu 22.04 and later, AppImages may need:', code: 'sudo apt install libfuse2' },
+		],
+	},
+];
+
+const included = [
+	'pandas, Polars, DuckDB, SQL and Ibis engines',
+	'Explore: drag-and-drop charts over your flows and live databases',
+	'Drivers for PostgreSQL, MySQL, SQL Server, SQLite and more',
+	'The curve-fitting plugin, with ready-made examples',
+	'A sample project to start from on first run',
+	'Updates offered in the app, signed and verified before they install',
+];
+---
+
+<Base
+	title="Download — Sidewinder Flow Studio"
+	description="Sidewinder Flow Studio as a desktop app for Windows and Linux: no Docker, no Python, no server. Free and open source."
+>
+	<section class="section intro">
+		<div class="wrap">
+			<span class="eyebrow">Desktop edition</span>
+			<h1>Download Flow Studio</h1>
+			<p class="lede">
+				The full tool as a desktop app: no Docker, no Python, no server to set up. Install it, open it, and
+				start from a sample project. Everything runs on your computer.
+			</p>
+			<p class="release">
+				{latest ? (
+					<>Version <strong>{latest.version}</strong>{released && <> · released {released}</>} · <a href={latest.notesUrl}>Release notes</a></>
+				) : (
+					<>The download links open the <a href={fallback}>latest release on GitHub</a>.</>
+				)}
+			</p>
+		</div>
+	</section>
+
+	<section class="section platforms-section">
+		<div class="wrap grid grid--2 platforms">
+			{platforms.map((p) => (
+				<article class="card platform" data-os={p.os}>
+					<header>
+						<h2>{p.name}</h2>
+						<p class="here">Your system</p>
+					</header>
+					<p class="muted requires">{p.requires}</p>
+					<div class="choice">
+						<a class="btn btn--primary" href={p.primary.href}>{p.primary.label}</a>
+						<p class="note">{p.primary.note}</p>
+					</div>
+					<div class="choice">
+						<a class="alt" href={p.secondary.href}>{p.secondary.label}</a>
+						<p class="note">{p.secondary.note}</p>
+					</div>
+					<ul class="tips">
+						{p.tips.map((t) => <li>{t.text}{t.code && <> <code>{t.code}</code></>}</li>)}
+					</ul>
+				</article>
+			))}
+		</div>
+		<div class="wrap">
+			<p class="muted mac">
+				<strong>macOS</strong> isn't available yet. Use the <a href="/#quick-start">Docker edition</a> for now, or
+				<a href={`${REPO_URL}/issues`}>tell us you'd use it</a>.
+			</p>
+		</div>
+	</section>
+
+	<section class="section section--soft">
+		<div class="wrap two-col">
+			<div>
+				<h2>What's included</h2>
+				<p class="muted">
+					The same Flow Studio as the server edition. Downloads are a few hundred megabytes because Python and the
+					data libraries come inside.
+				</p>
+			</div>
+			<ul class="checklist">
+				{included.map((i) => <li>{i}</li>)}
+			</ul>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="wrap two-col">
+			<div>
+				<h2>Desktop or server?</h2>
+			</div>
+			<div class="compare">
+				<p>
+					<strong>Desktop</strong> is for one person on one computer: analysis, teaching, trying Flow Studio
+					out. Scheduled flows run while the app is open.
+				</p>
+				<p>
+					<strong>Server</strong> (Docker) is for a team or for flows that run around the clock. It also includes
+					the Report node (Streamlit). <a href="/#quick-start">Quick start →</a>
+				</p>
+				<p class="muted">
+					Your projects and settings stay on your computer, in
+					<code>%APPDATA%\dev.sidewinderlabs.flowstudio</code> on Windows and
+					<code>~/.local/share/dev.sidewinderlabs.flowstudio</code> on Linux. The app shows the folder under
+					About.
+				</p>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<script>
+	// Highlight the visitor's own system; the page works the same without it.
+	const ua = navigator.userAgent;
+	const os = /Windows/i.test(ua) ? 'windows' : /Linux|X11/i.test(ua) && !/Android/i.test(ua) ? 'linux' : null;
+	if (os) document.querySelector(`.platform[data-os="${os}"]`)?.classList.add('is-yours');
+</script>
+
+<style>
+	.intro {
+		padding-bottom: 8px;
+	}
+	.release {
+		color: var(--text-muted);
+		margin: 0;
+	}
+	.platforms-section {
+		padding-top: 32px;
+	}
+	.platforms {
+		align-items: stretch;
+	}
+	.platform {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.platform header {
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+	}
+	.platform h2 {
+		margin: 0;
+	}
+	.here {
+		display: none;
+		margin: 0;
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--accent-text);
+	}
+	.platform.is-yours {
+		border-color: var(--sand-deep);
+		order: -1; /* first, also when the cards stack on a phone */
+	}
+	.platform.is-yours .here {
+		display: block;
+	}
+	.requires {
+		margin: 0 0 12px;
+		font-size: 0.95rem;
+	}
+	.choice {
+		margin-bottom: 12px;
+	}
+	.choice .btn {
+		margin-bottom: 6px;
+	}
+	.alt {
+		font-weight: 600;
+	}
+	.note {
+		margin: 2px 0 0;
+		font-size: 0.9rem;
+		color: var(--text-muted);
+	}
+	.tips {
+		margin: auto 0 0;
+		padding: 14px 0 0 1.1em;
+		border-top: 1px solid var(--border);
+		font-size: 0.9rem;
+		color: var(--text-muted);
+		overflow-wrap: anywhere;
+	}
+	.tips code {
+		font-size: 0.92em;
+	}
+	.tips li + li {
+		margin-top: 6px;
+	}
+	.mac {
+		margin: 24px 0 0;
+	}
+	.two-col {
+		display: grid;
+		gap: 16px 48px;
+	}
+	@media (min-width: 900px) {
+		.two-col {
+			grid-template-columns: 1fr 1.4fr;
+			align-items: start;
+		}
+	}
+	.compare p:first-child {
+		margin-top: 0;
+	}
+	.compare code {
+		font-size: 0.85em;
+		overflow-wrap: anywhere;
+	}
+</style>

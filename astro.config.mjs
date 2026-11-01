@@ -11,7 +11,8 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
 	site: "https://sidewinderlabs.dev",
 	output: "static",
-	integrations: [mdx(), sitemap()],
+	// /download/ is rendered per request, so the sitemap is told about it.
+	integrations: [mdx(), sitemap({ customPages: ["https://sidewinderlabs.dev/download/"] })],
 	adapter: cloudflare({
 		platformProxy: {
 			enabled: true,
