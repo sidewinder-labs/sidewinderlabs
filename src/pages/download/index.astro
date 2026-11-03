@@ -43,7 +43,8 @@ const platforms = [
 const included = [
 	'pandas, Polars, DuckDB, SQL and Ibis engines',
 	'Explore: drag-and-drop charts over your flows and live databases',
-	'Drivers for PostgreSQL, MySQL, SQL Server, SQLite and more',
+	'Database drivers for PostgreSQL, MySQL/MariaDB, SQL Server, Oracle, ClickHouse, Trino and SQLite',
+	'Fast database reads straight into Arrow, in parallel',
 	'The curve-fitting plugin, with ready-made examples',
 	'A sample project to start from on first run',
 	'Updates offered in the app, signed and verified before they install',
@@ -110,6 +111,12 @@ const included = [
 				<p class="muted">
 					The same Flow Studio as the server edition. Downloads are a few hundred megabytes because Python and the
 					data libraries come inside.
+				</p>
+				<p class="muted">
+					SQL Server also needs Microsoft's
+					<a href="https://learn.microsoft.com/sql/connect/odbc/download-odbc-driver-for-sql-server">ODBC Driver 18</a>
+					installed. Snowflake, BigQuery, Redshift, Databricks and data lakes are in the
+					<a href="/#quick-start">server edition</a>.
 				</p>
 			</div>
 			<ul class="checklist">
