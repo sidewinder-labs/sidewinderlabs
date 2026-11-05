@@ -1,0 +1,96 @@
+---
+// Code signing policy for the Windows desktop installers. Its name, the roles
+// and the privacy statement follow SignPath Foundation's conditions
+// (signpath.org/terms). Once the application is accepted, add their credit line
+// at the top: "Free code signing provided by SignPath.io, certificate by
+// SignPath Foundation" (with links to about.signpath.io and signpath.org).
+import Base from '../layouts/Base.astro';
+import { REPO_URL, RELEASES_URL } from '../consts';
+
+const WORKFLOW_URL = `${REPO_URL}/blob/main/.github/workflows/desktop.yml`;
+const MAINTAINER_URL = 'https://github.com/evank-dev';
+const ORG_PEOPLE_URL = 'https://github.com/orgs/sidewinder-labs/people';
+---
+
+<Base
+	title="Code signing policy — Sidewinder Flow Studio"
+	description="How the Sidewinder Flow Studio desktop installers are built and signed, who approves each release, and what the app sends over the network."
+>
+	<section class="section">
+		<div class="wrap">
+			<div class="prose">
+				<span class="eyebrow">Desktop edition</span>
+				<h1>Code signing policy</h1>
+
+				<p>
+					Signing the Windows installers lets Windows show who published them and confirm they haven't been
+					changed since. Signing is being set up with SignPath Foundation; until it is in place, the Windows
+					installers are not signed and Windows SmartScreen may warn about them.
+				</p>
+
+				<h2>What is signed</h2>
+				<p>
+					Only software built from the
+					<a href={REPO_URL}>Sidewinder Flow Studio repository</a>, which is open source under AGPL-3.0:
+				</p>
+				<ul>
+					<li>the Windows installers attached to each <a href={RELEASES_URL}>GitHub release</a>
+						(<code>…_x64-setup.exe</code> and <code>…_x64_en-US.msi</code>);</li>
+					<li>the programs built from the repository inside them: <code>sfs-desktop.exe</code> (the app window)
+						and <code>sfs-backend.exe</code> (the data engine).</li>
+				</ul>
+				<p>
+					The installers also contain unmodified open-source libraries from other projects, such as the
+					Python runtime, pandas, PyArrow, DuckDB and Polars. These are included as their projects publish
+					them and are not signed by us. Nothing else is signed under this policy: in particular, no
+					commercial add-on is ever part of the signed software.
+				</p>
+
+				<h2>How a release is built and signed</h2>
+				<ol>
+					<li>A version tag is pushed to the repository.</li>
+					<li>GitHub Actions builds the installers from that tag, in the
+						<a href={WORKFLOW_URL}>public build workflow</a>, and runs the smoke tests on the result.</li>
+					<li>The signing request is approved by hand, by an approver (below), for that release only.</li>
+					<li>The signed installers are attached to a draft release, checked, and then published.</li>
+				</ol>
+				<p>
+					No installer is built or signed on a personal computer. Every signed file carries the product name
+					“Sidewinder Flow Studio” and the release's version number in its properties.
+				</p>
+
+				<h2>Team and roles</h2>
+				<ul>
+					<li><strong>Committers and reviewers</strong>: members of the
+						<a href={ORG_PEOPLE_URL}>Sidewinder Labs organisation</a> on GitHub. Changes from anyone else
+						(pull requests) are reviewed by a member before they are merged.</li>
+					<li><strong>Approvers</strong>: owners of the organisation, who approve each signing request.</li>
+				</ul>
+				<p>
+					The project currently has one maintainer, <a href={MAINTAINER_URL}>evank-dev</a>, who holds all three
+					roles. Everyone in these roles uses multi-factor authentication on GitHub and on the signing service.
+				</p>
+
+				<h2 id="privacy">Privacy</h2>
+				<p>
+					This program will not transfer any information to other networked systems unless specifically
+					requested by the user or the person installing or operating it.
+				</p>
+				<ul>
+					<li>Your projects, data, settings and saved passwords stay on your computer.</li>
+					<li>The one automatic connection is the <strong>update check</strong> when the app starts: it
+						downloads the public list of the latest release from GitHub and sends nothing about you or your
+						data. Turn it off by setting the environment variable <code>SFS_NO_UPDATE_CHECK=1</code>.</li>
+					<li>The app connects to a database, or to an AI model provider, only after you add that connection
+						yourself, and only to the address you give.</li>
+				</ul>
+
+				<h2>Questions and reports</h2>
+				<p>
+					To report a problem with a signed file, or anything that looks wrong in a release, open an issue in
+					the <a href={`${REPO_URL}/issues`}>repository</a>.
+				</p>
+			</div>
+		</div>
+	</section>
+</Base>

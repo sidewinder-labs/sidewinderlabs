@@ -101,6 +101,11 @@ const included = [
 				<strong>macOS</strong> isn't available yet. Use the <a href="/#quick-start">Docker edition</a> for now, or
 				<a href={`${REPO_URL}/issues`}>tell us you'd use it</a>.
 			</p>
+			<p class="muted signing">
+				Code signing for the Windows installers is being set up with SignPath Foundation. How the installers
+				are built, who approves each release, and what the app sends over the network:
+				<a href="/code-signing/">Code signing policy</a>.
+			</p>
 		</div>
 	</section>
 
@@ -232,6 +237,9 @@ const included = [
 	}
 	.mac {
 		margin: 24px 0 0;
+	}
+	.signing {
+		margin: 8px 0 0;
 	}
 	.two-col {
 		display: grid;
