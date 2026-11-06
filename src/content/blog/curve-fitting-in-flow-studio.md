@@ -13,11 +13,7 @@ Flow Studio 1.28 adds a curve-fitting plugin. You pick the columns and a model i
 
 **Docker.** It's included in the images by default, so if you run Flow Studio 1.28 in Docker you already have it. (The `SFS_PLUGINS` setting in `.env` lists the plugins baked into the image; the default is `curvefit`.)
 
-**Running locally.** Install it into the environment Flow Studio runs in and restart the backend:
-
-```bash
-pip install -e plugins/sfs-plugin-curvefit
-```
+**Desktop app.** It's built in.
 
 You'll see two new engines in the processor's engine picker, **Curve fit** and **Evaluate model**, and a new chart template.
 

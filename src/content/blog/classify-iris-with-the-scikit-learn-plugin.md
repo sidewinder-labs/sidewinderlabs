@@ -24,13 +24,9 @@ docker compose build --no-cache backend
 docker compose up -d
 ```
 
-**Running locally.** Install the package into the environment Flow Studio runs in, then restart the backend:
+The desktop app doesn't include this plugin yet, so this post uses Docker.
 
-```bash
-pip install -e plugins/sfs-plugin-sklearn
-```
-
-Either way, the engine picker now shows **scikit-learn** with a 🧩 badge. It has no frontend code of its own: the plugin declares its form fields and the interface draws them.
+The engine picker now shows **scikit-learn** with a 🧩 badge. It has no frontend code of its own: the plugin declares its form fields and the interface draws them.
 
 ## Load the flowers
 
